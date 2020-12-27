@@ -1,0 +1,6 @@
+#Django>=3.1
+#mysqlclient==1.4.6
+sqlalchemy
+mysqlclient
+marshmallow-sqlalchemy
+mysql-connector-python

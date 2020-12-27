@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  python3:
+    container_name: "python_web"
+    restart: always
+    tty: true
+    build: ./python
+    #command: python3 manage.py runserver 0.0.0.0:8000
+    #ports:
+    # - 8000:8000
+    volumes:
+      - ./python:/code
+    links:
+      - mysql_db
+  mysql_db:
+    image: mysql:8
+    container_name: "mysql_db"
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d/
+      - ./mysql/lib:/var/lib/mysql
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql_db
+      - PMA_USER=root
+      - PMA_PASSWORD=password
+    ports:
+      - 8080:80
+    links:
+      - mysql_db
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
